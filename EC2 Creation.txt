@@ -1,0 +1,34 @@
+Day1
+
+
+Created EC2 instance using below steps.
+
+
+First downloaded terraform windows binary and AWS CLI tool, installed on windows machine. From the CLI, used aws configure command and provided the AWS access key/secret key. Then created a Terraform directory, set the directory path in CLI. Next, created below configuration file (main.tf)in the same path.
+
+
+provider "aws" {
+
+region = "us-east-1"
+
+}
+
+resource "aws_instance" "demo1" {   // demo1 is used internally by Terraform to reference the resource, this is not the actual EC2 instance name.
+
+ami = "ami-04b4f1a9cf54c11d0"
+
+instance_type = "t2.micro"
+
+
+//use tags block to actually name the EC2 instance in aws console.
+
+tags = {
+
+Name = "My-First-EC2"
+
+}
+
+}
+
+
+Used terraform init command to initialize the directory, terraform plan to preview the changes going to happen during apply and then terraform apply command to create the actual instance in aws. Finally used terraform destroy command to clear the EC2 resource from aws.

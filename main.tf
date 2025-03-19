@@ -92,3 +92,33 @@ resource "aws_instance" "web-server" {
 output "Web-Server-URL" {
   value = "http://${aws_instance.web-server.public_ip}"
 }
+
+=========================================================================================================================================================
+Use a Self-Signed SSL Certificate (Manual Setup on EC2) when you don't have any registered domain and want to secure webpage using certificate.
+Generate a Self-Signed Certificate
+
+sudo apt update -y
+sudo apt install -y openssl apache2
+sudo mkdir -p /etc/ssl/certs
+sudo openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout /etc/ssl/certs/apache-selfsigned.key -out /etc/ssl/certs/apache-selfsigned.crt -subj "/CN=3.221.149.36"
+
+Configure Apache to Use the Self-Signed Certificate
+
+sudo nano /etc/apache2/sites-available/default-ssl.conf
+Update the file to:
+
+<VirtualHost *:443>
+    ServerAdmin webmaster@localhost
+    DocumentRoot /var/www/html
+    SSLEngine on
+    SSLCertificateFile /etc/ssl/certs/apache-selfsigned.crt
+    SSLCertificateKeyFile /etc/ssl/certs/apache-selfsigned.key
+</VirtualHost>
+
+Enable SSL in Apache
+sudo a2enmod ssl
+sudo a2ensite default-ssl
+sudo systemctl restart apache2
+Access the Website Using HTTPS Open https://3.221.149.36 in your browser.
+🔹 You will see a warning about an untrusted certificate (since it's self-signed). Click Advanced → Proceed.
+==================================================================================================================================================================
